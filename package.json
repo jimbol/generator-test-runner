@@ -1,0 +1,12 @@
+{
+  "scripts": {
+    "build": "babel src -d lib",
+    "test": "mocha --compilers js:babel-core/register"
+  },
+  "devDependencies": {
+    "babel-cli": "^6.18.0"
+  },
+  "dependencies": {
+    "babel-preset-latest": "^6.16.0"
+  }
+}
