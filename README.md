@@ -37,6 +37,8 @@ export function* getFoos(action) {
 #### Example runner
 In our mocha tests, we can stub a run like so.  Its good to see it all together up front.
 ```es6
+import genRunner from 'generator-test-runner';
+
 let action = {};
 let token = 'abc-123';
 const response = {};
