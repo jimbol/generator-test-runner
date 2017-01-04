@@ -1,8 +1,29 @@
 {
+  "author": {
+    "name": "Jim Hall",
+    "email": "jim.hall.dev@gmail.com"
+  },
+  "name": "generator-test-runner",
+  "description": "Runs generators and stores output for later testing",
+  "version": "0.0.0",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/jimbol/generator-test-runner"
+  },
+  "keywords": [
+    "es6",
+    "generator",
+    "test",
+    "sagas"
+  ],
   "scripts": {
     "build": "babel src -d lib",
+    "prepublish": "npm run build",
     "test": "mocha --compilers js:babel-core/register"
   },
+  "licenses": [
+    "MIT"
+  ],
   "devDependencies": {
     "babel-cli": "^6.18.0",
     "reactotron-redux-saga": "^1.5.3"
