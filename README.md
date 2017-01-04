@@ -3,7 +3,7 @@ A generator test runner for Mocha.  Designed for use with [redux-saga](https://g
 
 ## Goals
 - Switching the order of instructions should be easy
-- Associate instructions with their results 
+- Associate instructions with their results
 - Changing instruction results should be easy
 
 ## Guide
@@ -36,9 +36,9 @@ beforeEach(() => {
 });
 ```
 #### Init Generator Runner
-First we pass the effect into the runner
+First we pass the generator into the runner
 ```es6
-effectRunner(getFoos)
+genRunner(getFoos)
 ```
 
 #### Invoking Generator
@@ -80,4 +80,3 @@ run = runner.run({
   getToken: 'invalid-token',
 });
 ```
-
