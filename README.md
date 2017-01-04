@@ -1,16 +1,31 @@
 # Generator Test Runner
-A generator test runner for Mocha.  Designed for use with [redux-saga](https://github.com/yelouafi/redux-saga) but will work with any generators.
+A [generator](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Generator) test runner for any test runner.  It was originally designed for use with [redux-saga](https://github.com/yelouafi/redux-saga), but will work with any generators.
 
 ## Goals
-- Switching the order of instructions should be easy
-- Associate instructions with their results
-- Changing instruction results should be easy
+- Switching the order of steps should be easy
+- Associate steps with their results
+- Changing step results should be easy
+
+## Install
+Either
+```
+npm install generator-test-runner --save-dev
+```
+or
+```
+yarn add generator-test-runner --dev
+```
 
 ## Guide
+Generator Test Runner allows you to test generators by
+
+1. Defining each step a generator will take
+2. Running the generator with each step
+3. Storing the yielded values of each step
 
 ### Step By Step
-#### Define Effect
-Lets start with a basic effect.
+#### Define Generator
+Lets start with a generator.  This one is a [redux-saga](https://github.com/redux-saga/redux-saga) effect.
 ```es6
 export function* getFoos(action) {
   const token = yield select(getToken);
