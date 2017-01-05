@@ -5,8 +5,9 @@ describe('genRunner', () => {
   let sampleGenerator;
 
   beforeEach(() => {
-    sampleGenerator = function* (args) {
+    sampleGenerator = function* (args, extraArg) {
       const a = yield { args };
+      const b = yield { extraArg };
       yield a.other;
       return args;
     }
@@ -32,6 +33,7 @@ describe('genRunner', () => {
       const run = genRunner(sampleGenerator)
         .next('init')
         .next('a')
+        .next('b')
         .run();
       assert(run.a);
       assert(!run.init);
@@ -42,6 +44,7 @@ describe('genRunner', () => {
       const run = genRunner(sampleGenerator)
         .next('init', myArgs)
         .next('a')
+        .next('b')
         .run();
 
       assert.equal(run.a.value.args, myArgs);
@@ -52,6 +55,7 @@ describe('genRunner', () => {
       const run = genRunner(sampleGenerator)
         .next('init', myArgs)
         .next('a', { other: 'a value' })
+          .next('b')
         .next('other')
         .run();
 
@@ -63,6 +67,7 @@ describe('genRunner', () => {
       const run = genRunner(sampleGenerator)
         .next('init', myArgs)
         .next('a', { other: 'a value' })
+          .next('b')
         .next('other')
         .next('returnVal')
         .run();
@@ -80,6 +85,7 @@ describe('genRunner', () => {
       runner.run();
 
       const run = runner
+        .next('b')
         .next('other')
         .next('returnVal')
         .run();
@@ -93,6 +99,7 @@ describe('genRunner', () => {
         const run = genRunner(sampleGenerator)
           .next('init', myArgs)
           .next('a', { other: 'a value' })
+          .next('b')
           .next('other')
           .next('returnVal')
           .next('ERROR')
@@ -109,6 +116,7 @@ describe('genRunner', () => {
       const run = genRunner(sampleGenerator)
         .next('init', myArgs)
         .next('a', { other: 'a value' })
+        .next('b')
         .next('other')
         .next('returnVal')
         .run({
@@ -116,6 +124,22 @@ describe('genRunner', () => {
         });
 
       assert.equal(run.other.value, 'a different value')
+    });
+
+    it('accepts multiple arguments into init', () => {
+      const myArgs = [1, 2, 3];
+      const myOtherArgs = [2, 3, 4];
+      const run = genRunner(sampleGenerator)
+        .next('init', myArgs, myOtherArgs)
+        .next('a', { other: 'a value' })
+        .next('b', { other: 'b value' })
+        .next('other')
+        .next('returnVal')
+        .run({
+          a: { other: 'a different value' },
+        });
+
+      assert.equal(run.b.value.extraArg, myOtherArgs)
     });
   });
 });
