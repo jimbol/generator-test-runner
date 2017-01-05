@@ -6,7 +6,7 @@
   "name": "generator-test-runner",
   "description": "Runs generators and stores yielded values for later testing",
   "main": "./src/index.js",
-  "version": "0.0.4",
+  "version": "0.0.5",
   "repository": {
     "type": "git",
     "url": "https://github.com/jimbol/generator-test-runner"
@@ -23,8 +23,8 @@
   "licenses": [
     "MIT"
   ],
-  "devDependencies": {},
-  "dependencies": {
+  "devDependencies": {
     "mocha": "^3.2.0"
-  }
+  },
+  "dependencies": {}
 }
