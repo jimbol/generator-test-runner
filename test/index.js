@@ -1,7 +1,5 @@
-import assert from 'assert';
-
-import genRunner from '../src/index';
-
+var assert = require('assert');
+var genRunner = require('../src');
 
 describe('genRunner', () => {
   let sampleGenerator;

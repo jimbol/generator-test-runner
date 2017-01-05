@@ -1,4 +1,4 @@
-export default function genRunner(generator) {
+module.exports = function genRunner(generator) {
   const steps = [];
 
   const next = function (name, value) {
