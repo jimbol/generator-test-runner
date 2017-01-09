@@ -35,8 +35,7 @@ describe('genRunner', () => {
         .next('a')
         .next('b')
         .run();
-      assert(run.a);
-      assert(!run.init);
+      assert(run.get('a'));
     });
 
     it('accepts arguments in first `next`', () => {
@@ -47,7 +46,7 @@ describe('genRunner', () => {
         .next('b')
         .run();
 
-      assert.equal(run.a.value.args, myArgs);
+      assert.equal(run.get('a').value.args, myArgs);
     });
 
     it('accepts yielded value in other `next`s', () => {
@@ -55,11 +54,11 @@ describe('genRunner', () => {
       const run = genRunner(sampleGenerator)
         .next('init', myArgs)
         .next('a', { other: 'a value' })
-          .next('b')
+        .next('b')
         .next('other')
         .run();
 
-      assert.equal(run.other.value, 'a value');
+      assert.equal(run.get('other').value, 'a value');
     });
 
     it('also stores the return value', () => {
@@ -67,13 +66,13 @@ describe('genRunner', () => {
       const run = genRunner(sampleGenerator)
         .next('init', myArgs)
         .next('a', { other: 'a value' })
-          .next('b')
+        .next('b')
         .next('other')
         .next('returnVal')
         .run();
 
-      assert.equal(run.returnVal.value, myArgs);
-      assert.equal(run.returnVal.done, true);
+      assert.equal(run.get('returnVal').value, myArgs);
+      assert.equal(run.get('returnVal').done, true);
     });
 
     it('allows partial runs', () => {
@@ -90,7 +89,7 @@ describe('genRunner', () => {
         .next('returnVal')
         .run();
 
-      assert.equal(run.returnVal.done, true);
+      assert.equal(run.get('returnVal').done, true);
     });
 
     it('throws error when too many steps are passed', () => {
@@ -123,7 +122,7 @@ describe('genRunner', () => {
           a: { other: 'a different value' },
         });
 
-      assert.equal(run.other.value, 'a different value')
+      assert.equal(run.get('other').value, 'a different value')
     });
 
     it('accepts multiple arguments into init', () => {
@@ -139,7 +138,7 @@ describe('genRunner', () => {
           a: { other: 'a different value' },
         });
 
-      assert.equal(run.b.value.extraArg, myOtherArgs)
+      assert.equal(run.get('b').value.extraArg, myOtherArgs)
     });
   });
 });
