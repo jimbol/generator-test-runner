@@ -13,25 +13,29 @@ module.exports = function genRunner(generator) {
     let alreadyDone = false;
 
     steps.forEach(({ name, value }) => {
-      if (g) {
-        if (alreadyDone) {
-          throw new Error(`Attempting to call '${name}', generator runner is already done`);
-        }
-
-        stepOutput[name] = g.next.apply(g, prevValue);
-
-        const done = stepOutput[name].done;
-        if (done) alreadyDone = true;
-
-        prevValue = (overrides[name]) ? [overrides[name]] : value;
+      if (!g) {
+        g = generator.apply(null, value);
         return;
       }
 
-      g = generator.apply(null, value);
+      if (alreadyDone) {
+        throw new Error(`Attempting to call '${name}', generator runner is already done`);
+      }
+
+      stepOutput[name] = g.next.apply(g, prevValue);
+
+      alreadyDone = stepOutput[name].done;
+
+      prevValue = (overrides[name]) ? [overrides[name]] : value;
     });
 
-    return stepOutput;
+    return { get: (label) => get(stepOutput, label) };
   };
 
   return { next, run };
+};
+
+const get = (stepOutput, label) => {
+  if (!stepOutput[label]) throw new Error(`'${label}' doesn't exist on run.`);
+  return stepOutput[label];
 };
