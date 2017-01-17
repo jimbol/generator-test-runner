@@ -86,8 +86,8 @@ run = runner.run();
 ### Asserting
 In our tests we can assert against pieces of the run
 ```es6
-expect(run.getToken.value).to.deep.equal(select(getToken));
-expect(run.fetchFoos.value).to.deep.equal(call(fetchFoos, action.bars, token));
+expect(run.get('getToken').value).to.deep.equal(select(getToken));
+expect(run.get('fetchFoos').value).to.deep.equal(call(fetchFoos, action.bars, token));
 ```
 
 ## Overwriting variables
