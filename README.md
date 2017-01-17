@@ -90,6 +90,50 @@ expect(run.get('getToken').value).to.deep.equal(select(getToken));
 expect(run.get('fetchFoos').value).to.deep.equal(call(fetchFoos, action.bars, token));
 ```
 
+### Forking
+We can define a base generator runner, then fork using `context`s' `beforeEach` functions.
+
+First, define the consistent steps, then build on the initial runner in subsequent `beforeEach` statements
+```es6
+describe('my generator', () => {
+  let initialRunner;
+  beforeEach(() => {
+    // step1, step2, and step3 always need to be run
+    // they will run beforeEach test
+    initialRunner = genRunner(myGenerator)
+      .next('step1')
+      .next('step2')
+      .next('step3', false);
+  });
+
+  context('when step3 returns true', () => {
+    let run;
+    beforeEach(() => {
+      run = initialRunner
+        .next('returnsEarly')
+        .run({ step3: true });
+    });
+
+    it('returns early', () => {
+      expect(run.get('returnsEarly').done).to.be.true;
+    });
+  });
+
+  context('when step3 returns false', () => {
+    let run;
+    beforeEach(() => {
+      run = initialRunner
+        .next('step4')
+        .next('finish')
+        .run();
+    });
+
+    it('finishes', () => {
+      expect(run.get('finishes').done).to.be.true;
+    });
+  });
+});
+```
 ## Overwriting variables
 Just pass in overrides for a given action when you call `run`.
 ```es6
