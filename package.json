@@ -6,7 +6,7 @@
   "name": "generator-test-runner",
   "description": "Runs generators and stores yielded values for later testing",
   "main": "./src/index.js",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "repository": {
     "type": "git",
     "url": "https://github.com/jimbol/generator-test-runner"
