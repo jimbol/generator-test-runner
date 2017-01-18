@@ -62,9 +62,15 @@ genRunner(getFoos)
 The first step after invoking `genRunner` represents the invocation of the generator itself.
 ```es6
 genRunner(getFoos)
-  .next('init', initialArgs)
+  .next('init', initialArg)
 ```
 This is like calling `getFoos(initialArgs)`.
+
+You can also pass multiple arguments into this first `next`.
+```es6
+genRunner(getFoos)
+  .next('init', foo, bar, true)
+```
 
 #### Defining Steps
 After that we define each step, giving each a name and result (if needed).
@@ -90,7 +96,15 @@ expect(run.get('getToken').value).to.deep.equal(select(getToken));
 expect(run.get('fetchFoos').value).to.deep.equal(call(fetchFoos, action.bars, token));
 ```
 
-### Forking
+## Overwriting variables
+Just pass in overrides for a given action when you call `run`.
+```es6
+run = runner.run({
+  getToken: 'invalid-token',
+});
+```
+
+## Forking
 We can define a base generator runner, then fork using `context`s' `beforeEach` functions.
 
 First, define the consistent steps, then build on the initial runner in subsequent `beforeEach` statements
@@ -132,12 +146,5 @@ describe('my generator', () => {
       expect(run.get('finishes').done).to.be.true;
     });
   });
-});
-```
-## Overwriting variables
-Just pass in overrides for a given action when you call `run`.
-```es6
-run = runner.run({
-  getToken: 'invalid-token',
 });
 ```
