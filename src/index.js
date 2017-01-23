@@ -1,41 +1,102 @@
 module.exports = function genRunner(generator) {
   const steps = [];
+  const matches = [];
 
   const next = function (name, ...value) {
     steps.push({ name, value });
-    return { next, run };
+    return { match, next, run };
   };
+
+  const match = function (name, tryMatch, value) {
+    matches.push({
+      name,
+      value,
+      fn: (output, match) => {
+        if (tryMatch(output)) {
+          return true;
+        }
+
+        return false;
+      }
+    });
+
+    return { match, next, run };
+  };
+
 
   const run = function (overrides = {}) {
     let g;
+    const matchOutput = {};
     const stepOutput = {};
     let prevValue;
     let alreadyDone = false;
+    let i = 0;
 
-    steps.forEach(({ name, value }) => {
+    while (true) {
+      const step = steps[i];
+
+      if (!step) break;
+
+      const { name, value } = step;
+
       if (!g) {
         g = generator.apply(null, value);
-        return;
+        i++;
+        continue;
       }
 
       if (alreadyDone) {
         throw new Error(`Attempting to call '${name}', generator runner is already done`);
       }
 
-      stepOutput[name] = g.next.apply(g, prevValue);
+      const output = g.next.apply(g, prevValue);
 
-      alreadyDone = stepOutput[name].done;
+      const matchedStep = matches.find((match) => {
+        if (match.fn(output)) {
+          matchOutput[match.name] = matchOutput[match.name] || [];
+          matchOutput[match.name].push(output)
+          return true;
+        }
 
-      prevValue = (overrides[name]) ? [overrides[name]] : value;
-    });
+        return false;
+      });
 
-    return { get: (label) => get(stepOutput, label) };
+
+      if (!matchedStep) {
+        stepOutput[name] = output;
+        prevValue = (overrides[name]) ? [overrides[name]] : value;
+        i++;
+      } else {
+        prevValue = matchedStep.value();
+      }
+
+      alreadyDone = output.done;
+
+      if (output.done) {
+        break;
+      };
+    }
+
+    return {
+      matchOutput, stepOutput,
+      get: (label) => {
+        return get(stepOutput, matchOutput, label);
+      }
+    };
   };
 
-  return { next, run };
+  return { match, next, run };
 };
 
-const get = (stepOutput, label) => {
-  if (!stepOutput[label]) throw new Error(`'${label}' doesn't exist on run.`);
-  return stepOutput[label];
+const get = (stepOutput, matchOutput, label) => {
+  const valForStep = stepOutput[label];
+  const valForMatch = matchOutput[label];
+
+  const val = valForStep || valForMatch;
+
+  if (!val) {
+    throw new Error(`'${label}' doesn't exist on run.`);
+  }
+
+  return val;
 };

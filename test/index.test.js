@@ -1,3 +1,4 @@
+var deepEqual = require('deep-equal');
 var assert = require('assert');
 var genRunner = require('../src');
 
@@ -106,6 +107,35 @@ describe('genRunner', () => {
       } catch (error) {
         assert.equal(error, "Error: Attempting to call 'ERROR', generator runner is already done");
       }
+    });
+  });
+
+  describe('match', () => {
+    let toggle = true;
+    let myArgs;
+    let myOtherArgs;
+    let run;
+
+    beforeEach(() => {
+      myArgs = [1, 2, 3];
+      myOtherArgs = [2, 3, 4];
+      run = genRunner(sampleGenerator)
+        .match('b', (step) => {
+          return deepEqual(step.value, { extraArg: myOtherArgs });
+        }, () => { other: 'b value' })
+        .next('init', myArgs, myOtherArgs)
+        .next('a', { other: 'a value' })
+        .next('other')
+        .next('returnVal')
+        .run();
+    });
+
+    it('sets match name to an array', () => {
+      assert.equal(Array.isArray(run.get('b')), true);
+    });
+
+    it('stores matched value in the array', () => {
+      assert.equal(run.get('b')[0].value.extraArg, myOtherArgs)
     });
   });
 
