@@ -34,7 +34,6 @@ module.exports = function genRunner(generator) {
 
     while (true) {
       const step = steps[i];
-
       if (!step) break;
 
       const { name, value } = step;
