@@ -104,6 +104,36 @@ run = runner.run({
 });
 ```
 
+## Matching
+We can handle `yield`s which match some conditions by using the `match` method.  `match` takes three arguments; the name of the match, the match function, and the return value function.
+
+For example:
+```es6
+// In this example, all yields which meet the conditions of the `detectSelector` fn
+// Will use the `callSelector` result instead of the normal iterator flow (using `runner.next()`)
+
+// Returns true if step meets desired conditions, otherwise false
+const detectSelector = (step: YieldedStep): boolean => {
+  return step.value && step.value.SELECT;
+};
+
+// Returns argument to be passed into `step.next`
+const callSelector = (step: YieldedStep): * => {
+  return step.value.select.selector(); // call promise
+};
+
+sinon.stub(selectors, 'getToken').returns('fake-token');
+sinon.stub(selectors, 'barIdsSelected').returns([ 1, 2, 3 ]);
+
+run = genRunner(onArchiveThreads)
+  .match('select', detectSelector, callSelector)
+  .next('start')
+  .next('finish')
+  .run();
+```
+
+`run.get('select')` will return an array of the matching yields
+
 ## Forking
 We can define a base generator runner, then fork using `context`s' `beforeEach` functions.
 
