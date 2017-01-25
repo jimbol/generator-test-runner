@@ -119,7 +119,7 @@ const detectSelector = (step: YieldedStep): boolean => {
 
 // Returns argument to be passed into `step.next`
 const callSelector = (step: YieldedStep): * => {
-  return step.value.select.selector(); // call promise
+  return step.value.select.selector(); // call spy
 };
 
 sinon.stub(selectors, 'getToken').returns('fake-token');
