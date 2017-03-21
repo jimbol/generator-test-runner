@@ -39,7 +39,7 @@ module.exports = function genRunner(generator) {
       const { name, value } = step;
 
       if (!g) {
-        g = generator.apply(null, value);
+        g = generator.apply(null, overrides[name] || value);
         i++;
         continue;
       }
@@ -77,7 +77,7 @@ module.exports = function genRunner(generator) {
     }
 
     return {
-      matchOutput, stepOutput,
+      output: Object.assign({}, matchOutput, stepOutput),
       get: (label) => {
         return get(stepOutput, matchOutput, label);
       }

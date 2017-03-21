@@ -104,6 +104,13 @@ run = runner.run({
 });
 ```
 
+Overriding the first `next` requires an array (in case you have multiple arguments!)
+```es6
+run = runner.run({
+  init: 'invalid-token',
+});
+```
+
 ## Matching
 We can handle `yield`s which match some conditions by using the `match` method.  `match` takes three arguments; the name of the match, the match function, and the return value function.
 
@@ -125,7 +132,7 @@ const callSelector = (step: YieldedStep): * => {
 sinon.stub(selectors, 'getToken').returns('fake-token');
 sinon.stub(selectors, 'barIdsSelected').returns([ 1, 2, 3 ]);
 
-run = genRunner(onArchiveThreads)
+run = genRunner(myGenerator)
   .match('select', detectSelector, callSelector)
   .next('start')
   .next('finish')

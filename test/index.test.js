@@ -50,6 +50,20 @@ describe('genRunner', () => {
       assert.equal(run.get('a').value.args, myArgs);
     });
 
+    it('accepts overrides for first `next`', () => {
+      const myArgs = [1, 2, 3];
+      const myOverrides = [3, 2, 1];
+      const run = genRunner(sampleGenerator)
+        .next('init', myArgs)
+        .next('a')
+        .next('b')
+        .run({
+          init: [myOverrides],
+        });
+
+      assert.equal(run.get('a').value.args, myOverrides);
+    });
+
     it('accepts yielded value in other `next`s', () => {
       const myArgs = [1, 2, 3];
       const run = genRunner(sampleGenerator)
