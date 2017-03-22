@@ -2,9 +2,13 @@ module.exports = function genRunner(generator) {
   const steps = [];
   const matches = [];
 
+  const snapshot = function (...args) {
+    return run(...args).output;
+  };
+
   const next = function (name, ...value) {
     steps.push({ name, value });
-    return { match, next, run };
+    return { match, next, run, snapshot };
   };
 
   const match = function (name, tryMatch, value) {
@@ -20,7 +24,7 @@ module.exports = function genRunner(generator) {
       }
     });
 
-    return { match, next, run };
+    return { match, next, run, snapshot };
   };
 
 
@@ -84,7 +88,7 @@ module.exports = function genRunner(generator) {
     };
   };
 
-  return { match, next, run };
+  return { match, next, run, snapshot };
 };
 
 const get = (stepOutput, matchOutput, label) => {

@@ -29,6 +29,11 @@ describe('genRunner', () => {
     assert.equal(typeof runner.run, 'function');
   });
 
+  it('returns `snapshot` method', () => {
+    const runner = genRunner(sampleGenerator);
+    assert.equal(typeof runner.snapshot, 'function');
+  });
+
   describe('next', () => {
     it('adds a step for second `next`', () => {
       const run = genRunner(sampleGenerator)
@@ -150,6 +155,22 @@ describe('genRunner', () => {
 
     it('stores matched value in the array', () => {
       assert.equal(run.get('b')[0].value.extraArg, myOtherArgs)
+    });
+  });
+
+  describe('snapshot', () => {
+    it('allows overrides to be passed', () => {
+      const myArgs = [1, 2, 3];
+      const runner = genRunner(sampleGenerator)
+        .next('init', myArgs)
+        .next('a', { other: 'a value' })
+        .next('b')
+        .next('other')
+        .next('returnVal');
+
+      const snapshot = runner.snapshot();
+
+      assert.deepEqual(snapshot, runner.run().output);
     });
   });
 
