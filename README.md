@@ -1,3 +1,5 @@
+The spirit child of this library is now available.  Check out [expect-gen](https://github.com/jimbol/expect-gen)!
+
 # Generator Test Runner
 A [generator](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Generator) test runner for any test runner.  It was originally designed for use with [redux-saga](https://github.com/yelouafi/redux-saga), but will work with any generators.
 
